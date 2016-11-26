@@ -1,4 +1,21 @@
 <resources>
-    <string name="app_name">EarTrainingAppFirstLevel</string>
+    <string name="app_name">First Level: Intervals</string>
     <string name="play_interval">Play</string>
+    <string name="radio_button_minor_second">Minor Second</string>
+    <string name="radio_button_major_second">Major Second</string>
+    <string name="radio_button_minor_third">Minor Third</string>
+    <string name="radio_button_major_third">Major Third</string>
+    <string name="radio_button_perfect_fourth">Perfect Fourth</string>
+    <string name="radio_button_augmented_fourth">Augmented Fourth</string>
+    <string name="radio_button_perfect_fifth">Perfect Fifth</string>
+    <string name="radio_button_minor_sixth">Minor Sixth</string>
+    <string name="radio_button_major_sixth">Major Sixth</string>
+    <string name="radio_button_minor_seventh">Minor Seventh</string>
+    <string name="radio_button_major_seventh">Major Seventh</string>
+    <string name="radio_button_perfect_octave">Perfect Octave</string>
+    <string name="submit_button">Submit</string>
+    <string name="correct_answer">Very good!</string>
+    <string name="wrong_answer">Wrong! The correct answer is: </string>
+    <string name="text_play_button">Press the Button to hear the Interval:</string>
+    <string name="exception">You have to play the interval first!</string>
 </resources>
