@@ -22,6 +22,8 @@ import java.util.Random;
 - Determine the statistic that makes the user jumps from a level to another one.
  */
 
+/*Quite a problem to understand how to manage exceptions and to understand the activity's state flow to be adopted and how.*/
+
 /*Remember: Now the activity name is Main Activity (activity_main), of course when you'll develop the whole app the name will
 change (e.g. First Level: Intervals), hence be carefull and modify the code where is needed.
  */
@@ -32,6 +34,20 @@ public class MainActivity extends AppCompatActivity{
     private RadioGroup radioGroupIntervals2;
     private RadioButton radioButtonIntervals1;
     private int flag;
+    private String interval;
+
+    final static int MIN_SECOND = 1;
+    final static int MAJ_SECOND = 2;
+    final static int MIN_THIRD = 3;
+    final static int MAJ_THIRD = 4;
+    final static int PERF_FOURTH = 5;
+    final static int AUG_FOURTH = 6;
+    final static int PERF_FIFTH = 7;
+    final static int MIN_SIXTH = 8;
+    final static int MAJ_SIXTH = 9;
+    final static int MIN_SEVENTH = 10;
+    final static int MAJ_SEVENTH = 11;
+    final static int PERF_OCTAVE = 12;
 
     private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {
 
@@ -78,6 +94,7 @@ public class MainActivity extends AppCompatActivity{
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 decideInterval();
+                addListenerOnButton(interval, flag);
             }
         });
     }
@@ -86,116 +103,115 @@ public class MainActivity extends AppCompatActivity{
     public void decideInterval() {
 
         int randomNum = randInt(1, 12);
-        String Interval;
-        flag = 1;
+        String interval;
 
         switch (randomNum) {
         //Minor second
         case 1: {
-            Interval = "Minor Second";
+            interval = "Minor Second";
             int lowerNoteInt = randInt(1, 12);
-            int higherNoteInt = lowerNoteInt + 1;
+            int higherNoteInt = lowerNoteInt + MIN_SECOND;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Major second
         case 2: {
-            Interval = "Major Second";
+            interval = "Major Second";
             int lowerNoteInt = randInt(1, 11);
-            int higherNoteInt = lowerNoteInt + 2;
+            int higherNoteInt = lowerNoteInt + MAJ_SECOND;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Minor third
         case 3: {
-            Interval = "Minor Third";
+            interval = "Minor Third";
             int lowerNoteInt = randInt(1, 10);
-            int higherNoteInt = lowerNoteInt + 3;
+            int higherNoteInt = lowerNoteInt + MIN_THIRD;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Major third
         case 4: {
-            Interval = "Major Third";
+            interval = "Major Third";
             int lowerNoteInt = randInt(1, 9);
-            int higherNoteInt = lowerNoteInt + 4;
+            int higherNoteInt = lowerNoteInt + MAJ_THIRD;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Perfect fourth
         case 5: {
-            Interval = "Perfect Fourth";
+            interval = "Perfect Fourth";
             int lowerNoteInt = randInt(1, 8);
-            int higherNoteInt = lowerNoteInt + 5;
+            int higherNoteInt = lowerNoteInt + PERF_FOURTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Augmented fourth
         case 6: {
-            Interval = "Augmented Fourth";
+            interval = "Augmented Fourth";
             int lowerNoteInt = randInt(1, 7);
-            int higherNoteInt = lowerNoteInt + 6;
+            int higherNoteInt = lowerNoteInt + AUG_FOURTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Perfect fifth
         case 7: {
-            Interval = "Perfect Fifth";
+            interval = "Perfect Fifth";
             int lowerNoteInt = randInt(1, 6);
-            int higherNoteInt = lowerNoteInt + 7;
+            int higherNoteInt = lowerNoteInt + PERF_FIFTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Minor sixth
         case 8: {
-            Interval = "Minor Sixth";
+            interval = "Minor Sixth";
             int lowerNoteInt = randInt(1, 5);
-            int higherNoteInt = lowerNoteInt + 8;
+            int higherNoteInt = lowerNoteInt + MIN_SIXTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Major sixth
         case 9: {
-            Interval = "Major Sixth";
+            interval = "Major Sixth";
             int lowerNoteInt = randInt(1, 4);
-            int higherNoteInt = lowerNoteInt + 9;
+            int higherNoteInt = lowerNoteInt + MAJ_SIXTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Minor seventh
         case 10: {
-            Interval = "Minor Seventh";
+            interval = "Minor Seventh";
             int lowerNoteInt = randInt(1, 3);
-            int higherNoteInt = lowerNoteInt + 10;
+            int higherNoteInt = lowerNoteInt + MIN_SEVENTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Major seventh
         case 11: {
-            Interval = "Major Seventh";
+            interval = "Major Seventh";
             int lowerNoteInt = randInt(1, 2);
-            int higherNoteInt = lowerNoteInt + 11;
+            int higherNoteInt = lowerNoteInt + MAJ_SEVENTH;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
         //Perfect Octave
         case 12: {
-            Interval = "Perfect Octave";
+            interval = "Perfect Octave";
             int lowerNoteInt = randInt(1, 1);
-            int higherNoteInt = lowerNoteInt + 12;
+            int higherNoteInt = lowerNoteInt + PERF_OCTAVE;
             playInterval(lowerNoteInt, higherNoteInt);
-            addListenerOnButton(Interval, flag);
+            addListenerOnButton(interval, flag);
             break;
         }
     }
