@@ -18,4 +18,6 @@
     <string name="wrong_answer">Wrong! The correct answer is: </string>
     <string name="text_play_button">Press the Button to hear the Interval:</string>
     <string name="exception">You have to play the interval first!</string>
+    <string name="exception1">You have to play the interval first!</string>
+    <string name="exception2">You have to select an answer first!!</string>
 </resources>
