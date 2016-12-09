@@ -23,8 +23,8 @@ import static android.R.attr.defaultValue;
 - Avoid the crash of the app when pressing the sequence Play->Submit Button without checking any Radio Button. <-- Fixed!
 - If you first press the submit button before pressing the play button(even if you checked a Radio Button) nothing happens.
   Possible solution: Using a Toast <-- Fixed
+- You have to re-play the same interval up to the moment in which you press the Submit Button <-- Solved with Preferences
 - Find a way to register and count correct and wrong answers.
-- You have to re-play the same interval up to the moment in which you press the Submit Button <-- Study preferences
 - Determine the statistic that makes the user jumps from a level to another one.
  */
 
