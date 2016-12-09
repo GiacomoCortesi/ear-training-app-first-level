@@ -23,8 +23,8 @@ import static android.R.attr.defaultValue;
 - Avoid the crash of the app when pressing the sequence Play->Submit Button without checking any Radio Button. <-- Fixed!
 - If you first press the submit button before pressing the play button(even if you checked a Radio Button) nothing happens.
   Possible solution: Using a Toast <-- Fixed
+- You have to re-play the same interval up to the moment in which you press the Submit Button <-- Solved with Preferences
 - Find a way to register and count correct and wrong answers.
-- You have to re-play the same interval up to the moment in which you press the Submit Button <-- Study preferences
 - Determine the statistic that makes the user jumps from a level to another one.
  */
 
@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity{
     private RadioGroup radioGroupIntervals1;
     private RadioGroup radioGroupIntervals2;
     private RadioButton radioButtonInterval;
-    private int flag;
-    private String interval;
+    private boolean submittedAnswer;
 
     final static int MIN_SECOND = 1;
     final static int MAJ_SECOND = 2;
@@ -117,11 +116,11 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume()
     {
-        flag = 0;
 
         super.onResume();
 
         ImageButton button = (ImageButton) findViewById(R.id.PlayButton);
+        submittedAnswer = true;
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,11 +135,8 @@ public class MainActivity extends AppCompatActivity{
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(flag == 0)
-                {
-                    Toast.makeText(MainActivity.this,
-                            R.string.exception1, Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(MainActivity.this,
+                        R.string.exception1, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -148,126 +144,122 @@ public class MainActivity extends AppCompatActivity{
     //The following method determines which interval will be played in a random way
     public void decideInterval() {
 
-        int randomNum = randInt(1, 12);
-        String interval;
+        String interval = "";
+        int lowerNoteInt = 0;
+        int higherNoteInt = 0;
+        SharedPreferences sharedPref = getSharedPreferences("savedInterval", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
 
-        switch (randomNum) {
-        //Minor second
-        case 1: {
-            interval = "Minor Second";
-            int lowerNoteInt = randInt(1, 12);
-            int higherNoteInt = lowerNoteInt + MIN_SECOND;
+        if(submittedAnswer) {
+
+            final int randomNum = randInt(1, 12);
+            switch (randomNum) {
+                //Minor second
+                case 1: {
+                    interval = "Minor Second";
+                    lowerNoteInt = randInt(1, 12);
+                    higherNoteInt = lowerNoteInt + MIN_SECOND;
+                    break;
+                }
+                //Major second
+                case 2: {
+                    interval = "Major Second";
+                    lowerNoteInt = randInt(1, 11);
+                    higherNoteInt = lowerNoteInt + MAJ_SECOND;
+                    break;
+                }
+                //Minor third
+                case 3: {
+                    interval = "Minor Third";
+                    lowerNoteInt = randInt(1, 10);
+                    higherNoteInt = lowerNoteInt + MIN_THIRD;
+                    break;
+                }
+                //Major third
+                case 4: {
+                    interval = "Major Third";
+                    lowerNoteInt = randInt(1, 9);
+                    higherNoteInt = lowerNoteInt + MAJ_THIRD;
+                    break;
+                }
+                //Perfect fourth
+                case 5: {
+                    interval = "Perfect Fourth";
+                    lowerNoteInt = randInt(1, 8);
+                    higherNoteInt = lowerNoteInt + PERF_FOURTH;
+                    break;
+                }
+                //Augmented fourth
+                case 6: {
+                    interval = "Augmented Fourth";
+                    lowerNoteInt = randInt(1, 7);
+                    higherNoteInt = lowerNoteInt + AUG_FOURTH;
+                    break;
+                }
+                //Perfect fifth
+                case 7: {
+                    interval = "Perfect Fifth";
+                    lowerNoteInt = randInt(1, 6);
+                    higherNoteInt = lowerNoteInt + PERF_FIFTH;
+                    break;
+                }
+                //Minor sixth
+                case 8: {
+                    interval = "Minor Sixth";
+                    lowerNoteInt = randInt(1, 5);
+                    higherNoteInt = lowerNoteInt + MIN_SIXTH;
+                    break;
+                }
+                //Major sixth
+                case 9: {
+                    interval = "Major Sixth";
+                    lowerNoteInt = randInt(1, 4);
+                    higherNoteInt = lowerNoteInt + MAJ_SIXTH;
+                    break;
+                }
+                //Minor seventh
+                case 10: {
+                    interval = "Minor Seventh";
+                    lowerNoteInt = randInt(1, 3);
+                    higherNoteInt = lowerNoteInt + MIN_SEVENTH;
+                    break;
+                }
+                //Major seventh
+                case 11: {
+                    interval = "Major Seventh";
+                    lowerNoteInt = randInt(1, 2);
+                    higherNoteInt = lowerNoteInt + MAJ_SEVENTH;
+                    break;
+                }
+                //Perfect Octave
+                case 12: {
+                    interval = "Perfect Octave";
+                    lowerNoteInt = randInt(1, 1);
+                    higherNoteInt = lowerNoteInt + PERF_OCTAVE;
+                    break;
+                }
+            }
+            editor.putInt("lowerNote", lowerNoteInt);
+            editor.putInt("higherNote", higherNoteInt);
+            editor.putString("interval", interval);
+            editor.apply();
             playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
+            submittedAnswer = false;
+            defineAnswer(interval);
         }
-        //Major second
-        case 2: {
-            interval = "Major Second";
-            int lowerNoteInt = randInt(1, 11);
-            int higherNoteInt = lowerNoteInt + MAJ_SECOND;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
+        else{
+            int savedLowerNote = sharedPref.getInt("lowerNote", defaultValue);
+            int savedHigherNote = sharedPref.getInt("higherNote", defaultValue);
+            String savedInterval = sharedPref.getString("interval", interval);
+            playInterval(savedLowerNote, savedHigherNote);
+            defineAnswer(savedInterval);
         }
-        //Minor third
-        case 3: {
-            interval = "Minor Third";
-            int lowerNoteInt = randInt(1, 10);
-            int higherNoteInt = lowerNoteInt + MIN_THIRD;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Major third
-        case 4: {
-            interval = "Major Third";
-            int lowerNoteInt = randInt(1, 9);
-            int higherNoteInt = lowerNoteInt + MAJ_THIRD;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Perfect fourth
-        case 5: {
-            interval = "Perfect Fourth";
-            int lowerNoteInt = randInt(1, 8);
-            int higherNoteInt = lowerNoteInt + PERF_FOURTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Augmented fourth
-        case 6: {
-            interval = "Augmented Fourth";
-            int lowerNoteInt = randInt(1, 7);
-            int higherNoteInt = lowerNoteInt + AUG_FOURTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Perfect fifth
-        case 7: {
-            interval = "Perfect Fifth";
-            int lowerNoteInt = randInt(1, 6);
-            int higherNoteInt = lowerNoteInt + PERF_FIFTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Minor sixth
-        case 8: {
-            interval = "Minor Sixth";
-            int lowerNoteInt = randInt(1, 5);
-            int higherNoteInt = lowerNoteInt + MIN_SIXTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Major sixth
-        case 9: {
-            interval = "Major Sixth";
-            int lowerNoteInt = randInt(1, 4);
-            int higherNoteInt = lowerNoteInt + MAJ_SIXTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Minor seventh
-        case 10: {
-            interval = "Minor Seventh";
-            int lowerNoteInt = randInt(1, 3);
-            int higherNoteInt = lowerNoteInt + MIN_SEVENTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Major seventh
-        case 11: {
-            interval = "Major Seventh";
-            int lowerNoteInt = randInt(1, 2);
-            int higherNoteInt = lowerNoteInt + MAJ_SEVENTH;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-        //Perfect Octave
-        case 12: {
-            interval = "Perfect Octave";
-            int lowerNoteInt = randInt(1, 1);
-            int higherNoteInt = lowerNoteInt + PERF_OCTAVE;
-            playInterval(lowerNoteInt, higherNoteInt);
-            defineAnswer(interval, flag);
-            break;
-        }
-    }
 }
 
     // The following method generates a random integer between min and max
     public static int randInt(int min, int max) {
         Random rand = new Random();
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     protected void playInterval(int lowerNoteInt, int higherNoteInt) {
@@ -283,7 +275,7 @@ public class MainActivity extends AppCompatActivity{
         mediaPlayer2.start();
     }
 
-    public void defineAnswer(final String playedInterval,int flag) {
+    public void defineAnswer(final String playedInterval) {
 
         /*The problem of the Radio Group is that, being a subset of the Linear Layout, doesn't allow to have multiple columns.
         To solve that we have to create two different Radio Groups and try to use them as one. Set up of the RGs:*/
@@ -311,6 +303,7 @@ public class MainActivity extends AppCompatActivity{
                 {
                     Toast.makeText(MainActivity.this,
                             R.string.exception2, Toast.LENGTH_LONG).show();
+                    submittedAnswer = false;
                 }
                 else
                 {
@@ -322,6 +315,7 @@ public class MainActivity extends AppCompatActivity{
                     {
                         showDialogWrongAnswer(playedInterval);
                     }
+                    submittedAnswer = true;
 
                     //This is in order to clear the selection of the Radio Button after the answer has been given
                     radioGroupIntervals1.clearCheck();
@@ -331,20 +325,13 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    protected void replayInterval(SharedPreferences sharedPref)
-    {
-        int savedLowerNote = sharedPref.getInt("saved lower note", defaultValue);
-        int savedHigherNote = sharedPref.getInt("saved higher note", defaultValue);
-        playInterval(savedLowerNote, savedHigherNote);
-    }
-
     protected void showDialogCorrectAnswer(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.correct_answer)
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //do things
+                        onResume();
                     }
                 });
         AlertDialog alert = builder.create();
@@ -357,7 +344,7 @@ public class MainActivity extends AppCompatActivity{
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //do things
+                        onResume();
                     }
                 });
         AlertDialog alert = builder.create();
