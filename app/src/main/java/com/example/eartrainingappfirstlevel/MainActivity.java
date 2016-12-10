@@ -10,9 +10,11 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.view.View.OnClickListener;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Random;
@@ -24,9 +26,16 @@ import static android.R.attr.defaultValue;
 - If you first press the submit button before pressing the play button(even if you checked a Radio Button) nothing happens.
   Possible solution: Using a Toast <-- Fixed
 - You have to re-play the same interval up to the moment in which you press the Submit Button <-- Solved with Preferences
-- Find a way to register and count correct and wrong answers.
-- Determine the statistic that makes the user jumps from a level to another one.
+- Add the Saving of the Score in the OnPause() State.
+- Add connection with other Activities
+- Increase the speed of the notes of the interval depending on the score (larger score-->faster notes)
  */
+
+/*Game Rules:
+Each correct answer worth 1 Point.
+Each wrong answer worth -5 Points (if you have less than 5 Points the score should be set to zero).
+In order to jump from a level to the following one 100 Points are needed.*/
+
 
 /*Optimizations:
 - Consider defining objects such as an Interval object.
@@ -37,19 +46,15 @@ import static android.R.attr.defaultValue;
 change (e.g. First Level: Intervals), hence be carefull and modify the code where is needed.
  */
 
-/* Still Working on:
-you could think to use the same flag both for the check of point 2 (already done) and for implementing the repetition
-of the same played interval until submit button is pressed.
-Main Issue:
-You should initialize back to zero the flag inside the OnClick method of the submit button, but you are not allowed to do so!!
- */
-
 public class MainActivity extends AppCompatActivity{
 
     private RadioGroup radioGroupIntervals1;
     private RadioGroup radioGroupIntervals2;
     private RadioButton radioButtonInterval;
     private boolean submittedAnswer;
+    private int scoreCounter = 0;
+    private ProgressBar scoreBar;
+    private TextView scoreText;
 
     final static int MIN_SECOND = 1;
     final static int MAJ_SECOND = 2;
@@ -105,6 +110,11 @@ public class MainActivity extends AppCompatActivity{
         radioGroupIntervals1.setOnCheckedChangeListener(listener1);
         radioGroupIntervals2.setOnCheckedChangeListener(listener2);
 
+        scoreBar = (ProgressBar)findViewById(R.id.scoreBar);
+        scoreBar.setProgress(0);
+        scoreText = (TextView)findViewById(R.id.scoreText);
+        scoreText.setText(0 + "/" + scoreBar.getMax());
+
     }
 
     @Override
@@ -131,12 +141,12 @@ public class MainActivity extends AppCompatActivity{
 
         Button submitButton = (Button) findViewById(R.id.submitButton);
 
-        //The following code displays an error Toast when pressing the submit button without playing the interval
+        //This is so that an error Toast is displayed when pressing the submit button without playing the interval
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,
-                        R.string.exception1, Toast.LENGTH_LONG).show();
+                        R.string.exception1, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -147,6 +157,7 @@ public class MainActivity extends AppCompatActivity{
         String interval = "";
         int lowerNoteInt = 0;
         int higherNoteInt = 0;
+
         SharedPreferences sharedPref = getSharedPreferences("savedInterval", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
@@ -271,8 +282,18 @@ public class MainActivity extends AppCompatActivity{
                 getIdentifier("sound_" + higherNoteStr, "raw", this.getPackageName());
         final MediaPlayer mediaPlayer1 = MediaPlayer.create(this, resIdLowerNote);
         final MediaPlayer mediaPlayer2 = MediaPlayer.create(this, resIdHigherNote);
+
+        //This way the two notes of the interval are played consecutively
         mediaPlayer1.start();
-        mediaPlayer2.start();
+        mediaPlayer1.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mediaPlayer2.start();
+            }});
+
+       /*//This way the two notes of the interval are played simultaneously
+        mediaPlayer1.start();
+        mediaPlayer2.start();*/
+
     }
 
     public void defineAnswer(final String playedInterval) {
@@ -302,7 +323,7 @@ public class MainActivity extends AppCompatActivity{
                 if (realCheck == -1)
                 {
                     Toast.makeText(MainActivity.this,
-                            R.string.exception2, Toast.LENGTH_LONG).show();
+                            R.string.exception2, Toast.LENGTH_SHORT).show();
                     submittedAnswer = false;
                 }
                 else
@@ -310,10 +331,24 @@ public class MainActivity extends AppCompatActivity{
                     if (radioButtonInterval.getText().toString().equals(playedInterval))
                     {
                         showDialogCorrectAnswer();
+                        Toast.makeText(MainActivity.this, "+1 Point", Toast.LENGTH_SHORT).show();
+                        scoreCounter = scoreCounter + 1;
+                        scoreBar.setProgress(scoreCounter);
+                        scoreText.setText(scoreBar.getProgress() + "/" + scoreBar.getMax());
                     }
                     else
                     {
                         showDialogWrongAnswer(playedInterval);
+                        Toast.makeText(MainActivity.this,
+                                "-5 Points", Toast.LENGTH_SHORT).show();
+                        if(scoreCounter < 5){
+                           scoreBar.setProgress(0);
+                            scoreText.setText(0 + "/" + scoreBar.getMax());
+                        }else{
+                            scoreCounter = scoreCounter - 5;
+                            scoreBar.setProgress(scoreCounter);
+                            scoreText.setText(scoreBar.getProgress() + "/" + scoreBar.getMax());
+                        }
                     }
                     submittedAnswer = true;
 

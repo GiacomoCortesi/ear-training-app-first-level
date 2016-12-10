@@ -12,18 +12,18 @@
     tools:context="com.example.eartrainingappfirstlevel.MainActivity">
 
     <TextView
+        android:id="@+id/pressBtnText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/text_play_button"
-        android:paddingTop="10dp"
         android:textSize="20sp"
         android:textColor="@color/dark_red"/>
         <ImageButton
             android:id="@+id/PlayButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_below="@+id/pressBtnText"
             android:layout_centerHorizontal="true"
             android:background="@drawable/play_button_icon"/>
     <RadioGroup
@@ -35,7 +35,7 @@
         android:paddingStart="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="20dp"
+        android:paddingTop="10dp"
         android:paddingBottom="20dp">
         <RadioButton
             android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
         android:paddingStart="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="20dp"
+        android:paddingTop="10dp"
         android:paddingBottom="20dp">
         <RadioButton
             android:layout_width="wrap_content"
@@ -147,5 +147,21 @@
         android:background="@drawable/submit_button_shape"
         android:paddingLeft="50sp"
         android:paddingRight="50sp"/>
+    <ProgressBar
+        android:id="@+id/scoreBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/submitButton"
+        android:paddingTop="20sp"
+        android:layout_centerHorizontal="true"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:max="100"
+        android:indeterminate="false"/>
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/scoreBar"
+        android:layout_below="@+id/scoreBar"/>
 
 </RelativeLayout>
